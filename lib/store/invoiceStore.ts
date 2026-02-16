@@ -145,7 +145,7 @@ const defaultInvoice: InvoiceData = {
     businessNumber: ""
   },
   notes: "",
-  taxRate: 16,
+  taxRate: 0,
   discountType: "percentage",
   discountValue: 0,
   currency: CURRENCIES[0],
@@ -229,14 +229,14 @@ export const useInvoiceStore = create<InvoiceStore>((set, get) => ({
     set((state) => ({
       invoice: {
         ...state.invoice,
-        items: state.invoice.items.map((item) =>
-          item.id === id
-            ? {
-                ...item,
-                [field]: field === "quantity" || field === "rate" ? (Number(value) || 0) : value
-              }
-            : item
-        )
+        items: state.invoice.items.map((item) => {
+          if (item.id !== id) return item;
+          if (field === "quantity" || field === "rate") {
+            const n = typeof value === "number" ? value : parseFloat(String(value));
+            return { ...item, [field]: isNaN(n) ? 0 : n };
+          }
+          return { ...item, [field]: value };
+        })
       }
     })),
   removeItem: (id) =>

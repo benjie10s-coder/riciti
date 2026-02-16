@@ -103,11 +103,15 @@ export default function OptionsSidebar({ onGetLink, onPrint }: OptionsSidebarPro
           </select>
           <input
             type="number"
+            step="any"
             className="w-full rounded-xl border border-slate-200 px-3 py-2.5 sm:py-2 text-sm"
             placeholder={invoice.discountType === "percentage" ? "%" : "0"}
             min={0}
-            value={invoice.discountValue || ""}
-            onChange={(event) => setField("discountValue", event.target.value === "" ? 0 : Number(event.target.value) || 0)}
+            value={invoice.discountValue === 0 ? "" : invoice.discountValue}
+            onChange={(e) => {
+              const v = e.target.valueAsNumber;
+              setField("discountValue", isNaN(v) ? 0 : v);
+            }}
           />
         </div>
       </div>
@@ -120,12 +124,16 @@ export default function OptionsSidebar({ onGetLink, onPrint }: OptionsSidebarPro
         <div className="relative">
           <input
             type="number"
+            step="any"
             className="w-full rounded-xl border border-slate-200 px-3 py-2.5 sm:py-2 pr-8 text-sm"
-            placeholder="16"
+            placeholder="0"
             min={0}
             max={100}
-            value={invoice.taxRate || ""}
-            onChange={(event) => setField("taxRate", event.target.value === "" ? 0 : Number(event.target.value) || 0)}
+            value={invoice.taxRate === 0 ? "" : invoice.taxRate}
+            onChange={(e) => {
+              const v = e.target.valueAsNumber;
+              setField("taxRate", isNaN(v) ? 0 : v);
+            }}
           />
           <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-slate-400">
             %
